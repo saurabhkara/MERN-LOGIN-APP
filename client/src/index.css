@@ -11,3 +11,10 @@ body{
     background: #dcdce6;
     /* background-image: url(); */
 }
+button{
+    background-color: rgb(99 102 241 ) !important;
+    color: white !important;
+}
+button:hover{
+    background-color: #ff6a6a !important;
+}

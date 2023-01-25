@@ -42,14 +42,14 @@ export default function Password() {
                 {...formik.getFieldProps("password")}
               />
               <button className={styles.btn} type="submit">
-                Let's Go
+                Signin
               </button>
             </div>
             <div className="text-center py-4">
               <span className="text-gray-500">
-                Not a member{" "}
-                <Link to="/register" className="text-red-500">
-                  Register Now
+                forgot password ? {" "}
+                <Link to="/recovery" className="text-red-500">
+                  Recover Password
                 </Link>
               </span>
             </div>

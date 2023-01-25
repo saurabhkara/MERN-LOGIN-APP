@@ -18,10 +18,14 @@
     @apply focus:outline-none;
 }
 
-.btn {
+.btn{
     @apply bg-indigo-500 border w-3/4 py-4 text-gray-600 rounded-2xl;
 }
 
 .btn:hover{
     background-color: #ff6a6a;
+}
+
+input[type='file']{
+    display: none;
 }
