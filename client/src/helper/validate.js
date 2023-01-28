@@ -1,9 +1,16 @@
-import { toast } from "react-hot-toast"
+import { toast } from "react-hot-toast";
+import { getAuthenticate } from "./apiHelper";
 
 /*User Name Validation */
 
 export async function usernameValidate(values){
     const errors = userNameVerify({},values);
+    if(values.username){
+      const {status} = await getAuthenticate(values.username);
+      if(status!==200){
+        errors.exist = toast.error("User doesn't exist")
+      }
+    }
     return errors;
 }
 

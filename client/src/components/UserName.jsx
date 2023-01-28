@@ -1,12 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import profile from "../assets/pp.jpg";
 import styles from "../styles/UserName.module.css";
 import { Toaster } from "react-hot-toast";
 import { useFormik } from "formik";
 import { usernameValidate } from "../helper/validate";
+import { useAuthStore } from "../store/store";
 
 export default function UserName() {
+    const setUsername = useAuthStore(state=>state.setUsername);
+    const navigate= useNavigate();
+
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -15,7 +19,8 @@ export default function UserName() {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (value) => {
-      console.log(value);
+      setUsername(value.username);
+      navigate('/password')
     },
   });
 
