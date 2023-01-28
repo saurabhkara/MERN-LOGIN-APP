@@ -65,7 +65,7 @@ export const register = async (req, res) => {
               user
                 .save()
                 .then((result) =>
-                  res.status(200).send("User Registered successfully")
+                  res.status(201).send({msg:"User Registered successfully"})
                 )
                 .catch((error) => {
                   res.status(400).send(error);
@@ -131,7 +131,6 @@ export const login = async (req, res) => {
   }
 };
 
-
 /** GET: http://localhost:8080/api/user/example123 */
 export const getUser = async (req, res) => {
   const { username } = req.params;
@@ -158,7 +157,7 @@ export const generateOTP = async (req, res) => {
       upperCaseAlphabets: false,
       lowerCaseAlphabets: false,
     });
-    return res.status(201).send(req.app.locals.OTP);
+    return res.status(201).send({code:req.app.locals.OTP});
   } catch (error) {
     return res.status(400).json("generateOTP");
   }
@@ -168,18 +167,18 @@ export const generateOTP = async (req, res) => {
 export const verifyOTP = async (req, res) => {
   const { code } = req.query;
   if (!code) {
-    return res.status(200).send("Invalid OTP");
+    return res.status(200).send({msg:"Invalid OTP"});
   }
   try {
     if (parseInt(code) === parseInt(req.app.locals.OTP)) {
       req.app.locals.OTP = null;
       req.app.locals.resetSession = true;
-      return res.status(200).send("Verified OTP successfully");
+      return res.status(200).send({msg:"Verified OTP successfully"});
     } else {
-      return res.status(200).send("Invalid OTP");
+      return res.status(200).send({msg:"Invalid OTP"});
     }
   } catch (error) {
-    return res.status(400).json("verifyOTP");
+    return res.status(400).json({msg:"verifyOTP"});
   }
 };
 
@@ -230,25 +229,30 @@ export const updateUser = async (req, res) => {
 export const resetPassword = async (req, res) => {
   try {
     const { username, password } = req.body;
-    if(!req.app.locals.resetSession) return res.status(400).send('Session Expired');
+    if (!req.app.locals.resetSession)
+      return res.status(400).send("Session Expired");
     try {
       UserModel.findOne({ username })
         .then((user) => {
           bcrypt
             .hash(password, 10)
             .then((hashedPassword) => {
-              UserModel.updateOne({ username }, { password: hashedPassword },(err,user)=>{
-                if(err)  throw err;
-                req.app.locals.resetSession=false;
-                return res.status(200).send('Record Updated');
-              })
+              UserModel.updateOne(
+                { username },
+                { password: hashedPassword },
+                (err, user) => {
+                  if (err) throw err;
+                  req.app.locals.resetSession = false;
+                  return res.status(200).send({msg:"Record Updated"});
+                }
+              );
             })
             .catch((err) => {
-              return res.status(401).send("Unable to hash password");
+              return res.status(401).send({msg:"Unable to hash password"});
             });
         })
         .catch((err) => {
-          return res.status(440).status("Username not found");
+          return res.status(440).status({msg:"Username not found"});
         });
     } catch (error) {
       return res.status(500).send(error);

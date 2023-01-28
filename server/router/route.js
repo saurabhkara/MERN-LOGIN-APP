@@ -18,8 +18,9 @@ router.post('/register',(req, res)=>{
 
 router.route('/login').post(controller.verifyUser,controller.login);
 
-router.route('/registermail').post(registerMail)
-router.route('/authenticate').post(controller.verifyUser)
+router.route('/registermail').post(registerMail);
+
+router.route('/authenticate').post(controller.verifyUser,(req,res)=>res.end('available'));
 
 
 //Get Request
@@ -33,6 +34,7 @@ router.route('/verifyOTP').get(controller.verifyUser,controller.verifyOTP)
 router.route('/createResetSession').get(controller.createResetSession)
 
 //Put Request
+
 router.route('/updateuser').put(Auth,controller.updateUser)
 
 router.route('/resetPassword').put(controller.resetPassword);
