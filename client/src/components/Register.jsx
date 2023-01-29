@@ -1,14 +1,15 @@
 import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import profile from "../assets/pp.jpg";
 import styles from "../styles/UserName.module.css";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { useFormik } from "formik";
 import { registerValidate } from "../helper/validate";
 import {convertToBase64} from '../helper/convert.js'
+import { getRegister } from "../helper/apiHelper";
 
 export default function Register() {
-
+  const navigate = useNavigate();
   const [dp, setDp] =useState('');
 
   const formik = useFormik({
@@ -21,9 +22,20 @@ export default function Register() {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (value) => {
-      console.log(Object.assign(value,{file:dp}));
+      value=Object.assign(value,{profile:dp})
+      console.log(value);
+      let regisgterPromise = getRegister(value);
+      toast.promise(regisgterPromise,{
+        loading: "Creating",
+        success: <b>Register Successfully...</b>,
+        error: <b>Could not Register..</b>
+      });
+      regisgterPromise.then(()=>{
+        navigate('/');
+      })
     },
   });
+
 
 const onUpload= async (e)=>{
   let base64 = await convertToBase64(e.target.files[0]);

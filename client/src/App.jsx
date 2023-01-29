@@ -1,6 +1,7 @@
 import React from 'react';
 import {createBrowserRouter, RouterProvider,} from 'react-router-dom';
 import { PageNotFound, Profile, UserName,Password,Register,Reset,Recovery} from './components';
+import { Authorize, ProtectRoute } from './middleware/auth';
 
 export default function App() {
 
@@ -15,7 +16,7 @@ export default function App() {
         },
         {
             path:'/password',
-            element: <Password></Password>
+            element: <ProtectRoute><Password /></ProtectRoute>
         },
         {
             path:'/reset',
@@ -23,7 +24,7 @@ export default function App() {
         },
         {
             path:'/profile',
-            element: <Profile></Profile>
+            element: <Authorize><Profile /></Authorize>
         },
         {
             path:'/recovery',

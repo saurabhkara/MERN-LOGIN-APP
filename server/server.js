@@ -9,6 +9,7 @@ const app = express();
 const port = 8080;
 
 /** Middlewares */
+// app.use(express.limit(100000000));
 app.use(express.json());
 app.use(cors());
 app.use(morgan('tiny'));

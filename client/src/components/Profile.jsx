@@ -1,27 +1,46 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import profile from "../assets/pp.jpg";
 import styles from "../styles/UserName.module.css";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { useFormik } from "formik";
 import { profileValidate } from "../helper/validate";
+import useFetch from '../hooks/fetch.hook';
+import { getUpdateUser } from "../helper/apiHelper";
 
 export default function Profile() {
+  const [{isLoading, apiData, serveError}] = useFetch();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      firstname: "",
-      lastname:"",
-      mobile:'',
-      email:'',
-      address:'',
+      firstname:apiData?.firstname || "",
+      lastname: apiData?.lastname ||"",
+      mobile:apiData?.mobile ||'',
+      email:apiData?.email||'',
+      address:apiData?.address||'',
     },
+    enableReinitialize:true,
     validate:(value)=>profileValidate(value),
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (value) => {
       console.log(value);
+      const getUpdatePromise =getUpdateUser(value);
+      toast.promise(getUpdatePromise,{
+        loading:"Updating...",
+        success:"Profile Updated",
+        error:"Updation failed",
+      })
     },
   });
+
+  function onLogout(){
+    localStorage.removeItem('token');
+    navigate('/');
+  }
+
+  if(isLoading) return (<h1 className="text-2xl font-bold">Loading...</h1>);
+  if(serveError) return (<h1 className="text-2xl text-red-500">{serveError.error}</h1>);
 
   return (
     <div className="container mx-auto">
@@ -82,10 +101,10 @@ export default function Profile() {
             </div>
             <div className="text-center py-4">
               <span className="text-gray-500">
-                Not a member{" "}
-                <Link to="/register" className="text-red-500">
-                  Register Now
-                </Link>
+                Want to logout?
+                <span style={{color:'red'}} onClick={onLogout}>
+                  Logout
+              </span>
               </span>
             </div>
           </form>
