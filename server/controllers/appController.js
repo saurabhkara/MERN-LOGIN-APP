@@ -167,7 +167,7 @@ export const generateOTP = async (req, res) => {
 export const verifyOTP = async (req, res) => {
   const { code } = req.query;
   if (!code) {
-    return res.status(200).send({msg:"Invalid OTP"});
+    return res.status(400).send({msg:"Invalid OTP"});
   }
   try {
     if (parseInt(code) === parseInt(req.app.locals.OTP)) {
@@ -175,10 +175,10 @@ export const verifyOTP = async (req, res) => {
       req.app.locals.resetSession = true;
       return res.status(200).send({msg:"Verified OTP successfully"});
     } else {
-      return res.status(200).send({msg:"Invalid OTP"});
+      return res.status(400).send({msg:"Invalid OTP"});
     }
   } catch (error) {
-    return res.status(400).json({msg:"verifyOTP"});
+    return res.status(500).json({msg:"verifyOTP"});
   }
 };
 

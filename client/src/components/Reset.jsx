@@ -1,23 +1,50 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../styles/UserName.module.css";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { useFormik } from "formik";
 import { resetPasswordValidate } from "../helper/validate";
+import { getResetPassword } from "../helper/apiHelper";
+import { useAuthStore } from "../store/store";
 
 export default function Reset() {
+  
+  const navigate = useNavigate();
+  const username = useAuthStore((state) => state.auth.username);
+
+  useEffect(()=>{
+  
+  },[])
+
   const formik = useFormik({
     initialValues: {
       password: "",
-      confirm_pwd:""
+      confirm_pwd: "",
     },
-    validate:(value)=>resetPasswordValidate(value),
+    validate: (value) => resetPasswordValidate(value),
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (value) => {
       console.log(value);
+      const resetPromise = getResetPassword({
+        username,
+        password: value.password,
+      }).then(() => {
+        setTimeout(() => {
+          navigate("/");
+        }, 500);
+      }).catch((err)=>{
+        console.log(err);
+      })
+    
+      toast.promise(resetPromise, {
+        loading: "Verifying",
+        success: "Password Updated",
+        error: "Password updation failed",
+      });
     },
   });
+ 
 
   return (
     <div className="container mx-auto">
@@ -31,7 +58,6 @@ export default function Reset() {
             </span>
           </div>
           <form className="py-2" onSubmit={formik.handleSubmit}>
-            
             <div className="textbox flex flex-col gap-6 items-center">
               <input
                 type="password"

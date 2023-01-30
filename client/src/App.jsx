@@ -20,7 +20,7 @@ export default function App() {
         },
         {
             path:'/reset',
-            element: <Reset></Reset>
+            element: <ProtectRoute><Reset/></ProtectRoute>
         },
         {
             path:'/profile',

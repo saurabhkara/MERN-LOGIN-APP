@@ -1,23 +1,21 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
-
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
 // const baseUrl = `http://localhost:8080/api`;
 
-
 //Get Username using Token
-export const getUserName =  ()=>{
+export const getUserName = () => {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const decode = jwt_decode(token);
     return decode;
   } catch (error) {
     return error;
   }
-}
+};
 
-//Authenticate User 
+//Authenticate User
 export const getAuthenticate = async (username) => {
   try {
     return await axios.post(`/authenticate`, { username: username });
@@ -67,7 +65,7 @@ export async function getLogin({ username, password }) {
   try {
     if (username) {
       const { data } = await axios.post(`/login`, { username, password });
-      return Promise.resolve( data );
+      return Promise.resolve(data);
     }
   } catch (error) {
     return Promise.reject({ error });
@@ -125,7 +123,7 @@ export const getVerifyOTP = async ({ code, username }) => {
     const { data, status } = await axios.get(`/verifyotp`, {
       params: { code, username },
     });
-    return { data, status };
+    return Promise.resolve({ data, status });
   } catch (error) {
     return Promise.reject({ error: "OTP doesn't match" });
   }
@@ -138,8 +136,22 @@ export const getResetPassword = async ({ username, password }) => {
       username,
       password,
     });
+    console.log(data)
     return Promise.resolve({ data, status });
   } catch (error) {
-    return Promise({ error });
+    console.log(error);
+    return Promise.reject({ error });
   }
 };
+
+
+//reset create session 
+
+export const getResetSession = async ()=>{
+  try {
+    const {data} = await axios.get('/createResetSession');
+     return Promise.resolve(data);
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
